@@ -10,9 +10,8 @@ import { ItemWrapper } from './item-wrapper'
 import { StarcraftArea } from './starcraft/starcraft-area'
 import {
   improvementDataSelector,
-  improveItemIdsByDaySelector,
+  improveItemIdsByDaySelector, starCraftPlanSelector,
 } from './selectors'
-import {getStarcraftPlans} from "./starcraft/utils";
 
 const { __ } = window.i18n['poi-plugin-item-improvement2']
 
@@ -26,7 +25,7 @@ const getJSTDayofWeek = () => {
 }
 
 export const ItemInfoArea = connect(state => ({
-  plans: getStarcraftPlans(),
+  plans: starCraftPlanSelector(state),
   data: improvementDataSelector(state),
   idByDay: improveItemIdsByDaySelector(state),
   $equips: _.get(state, 'const.$ships', {}),

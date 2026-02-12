@@ -3,9 +3,10 @@ import path from 'path'
 import _ from 'lodash'
 import { createSelector } from 'reselect'
 import {
-  constSelector,
-  equipsSelector,
-  createDeepCompareArraySelector,
+    constSelector,
+    configSelector,
+    equipsSelector,
+    createDeepCompareArraySelector,
 } from 'views/utils/selectors'
 import {getStarcraftPlans, infinityNum, modifyPlans} from "./starcraft/utils";
 
@@ -125,7 +126,9 @@ export const adjustedRemodelChainsSelector = createSelector(
 )
 
 export const starCraftPlanSelector = createSelector(
-    getStarcraftPlans,
+    [
+        configSelector,
+    ], config => _.get(config, 'plugin.poi-plugin-starcraft.plans', {})
 )
 
 
