@@ -7,9 +7,8 @@ import {
   FormControl,
   Checkbox,
 } from 'react-bootstrap'
-import {infinityNum} from './utils'
 import NumericInput from 'react-numeric-input'
-import { starText, modifyPlans } from './utils'
+import { starText, modifyPlans, infinityNum } from './utils'
 
 const { __ } = window.i18n['poi-plugin-item-improvement2']
 

@@ -49,5 +49,11 @@
   "Expand only non-empty categories": "僅展開內容非空的裝備類別",
 
   "Starcraft": "星海爭霸",
-  "Your personal planner for crafting stars": "裝備改修規劃書"
+  "Your personal planner for crafting stars": "裝備改修規劃書",
+  "Cost": "消耗統計",
+  "Total Cost & Shortage": "總消耗與缺口",
+  "Cost page is under construction.": "消耗統計頁面正在建設中。",
+  "Extra": "額外需求",
+  "No equipment plans.": "目前沒有裝備計畫。",
+  "No improvement cost data.": "缺少改修消耗資料。"
 }

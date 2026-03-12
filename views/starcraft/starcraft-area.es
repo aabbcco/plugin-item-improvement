@@ -29,6 +29,7 @@ class Starcraft extends Component {
       api_name: PropTypes.string.isRequired,
       equips: PropTypes.arrayOf(PropTypes.object).isRequired,
     }).isRequired,
+    plans: PropTypes.object.isRequired,
   }
 
   static prepareAutoCollapse(props) {

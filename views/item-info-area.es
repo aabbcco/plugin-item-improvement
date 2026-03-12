@@ -8,6 +8,7 @@ import { join } from 'path-extra'
 
 import { ItemWrapper } from './item-wrapper'
 import { StarcraftArea } from './starcraft/starcraft-area'
+import { CostArea } from './cost/cost-area'
 import {
   improvementDataSelector,
   improveItemIdsByDaySelector, starCraftPlanSelector,
@@ -49,6 +50,7 @@ export const ItemInfoArea = connect(state => ({
 
   getRows = day => {
     const { data, idByDay } = this.props
+    console.log(data,idByDay)
     return fp.flow(
       fp.filter(row => day === -1 || (idByDay[day] || []).includes(row.id)),
       fp.sortBy([
@@ -80,11 +82,16 @@ export const ItemInfoArea = connect(state => ({
                 <NavItem eventKey={6}>{__('Saturday')}</NavItem>
                 <NavItem eventKey={-1}>{__('All')}</NavItem>
                 <NavItem eventKey={10}>{__('Starcraft')}</NavItem>
+                <NavItem eventKey={11}>{__('Cost')}</NavItem>
               </Nav>
             </Col>
           </Grid>
           <Grid className="list-container">
             {
+              this.state.day === 10 ?
+              <StarcraftArea /> :
+              this.state.day === 11 ?
+              <CostArea /> :
               this.state.day < 7 ?
               this.getRows(this.state.day).map((row, index) => (
                 <ItemWrapper
@@ -95,7 +102,15 @@ export const ItemInfoArea = connect(state => ({
                   plans={plans}
                   $equips={$equips} />
               )) :
-              <StarcraftArea />
+              this.getRows(-1).map((row, index) => (
+                <ItemWrapper
+                  index={index}
+                  row={row}
+                  key={row.id}
+                  day={day}
+                  plans={plans}
+                  $equips={$equips} />
+              ))
             }
           </Grid>
         </div>

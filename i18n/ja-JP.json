@@ -50,5 +50,11 @@
   "Expand only non-empty categories": "改修計画がある装備種類だけを展開",
 
   "Starcraft": "スタークラフト",
-  "Your personal planner for crafting stars": "装備改修計画"
+  "Your personal planner for crafting stars": "装備改修計画",
+  "Cost": "消費統計",
+  "Total Cost & Shortage": "総消費と不足",
+  "Cost page is under construction.": "消費統計ページは建設中です。",
+  "Extra": "追加要件",
+  "No equipment plans.": "現在の装備計画はありません。",
+  "No improvement cost data.": "改修消費データがありません。"
 }

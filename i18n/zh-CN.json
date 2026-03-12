@@ -49,5 +49,11 @@
   "Expand only non-empty categories": "仅展开内容非空的装备类别",
 
   "Starcraft": "星级争霸",
-  "Your personal planner for crafting stars": "装备改修规划书"
+  "Your personal planner for crafting stars": "装备改修规划书",
+  "Cost": "消耗统计",
+  "Total Cost & Shortage": "总消耗与缺口",
+  "Cost page is under construction.": "消耗统计页面正在建设中。",
+  "Extra": "额外需求",
+  "No equipment plans.": "当前没有装备计划。",
+  "No improvement cost data.": "缺少改修消耗数据。"
 }

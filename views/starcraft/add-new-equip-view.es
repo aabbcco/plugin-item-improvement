@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import FontAwesome from 'react-fontawesome'
-import { Button, FormControl } from 'react-bootstrap'
-import {addNewEquipPlan} from './utils'
+import {
+  Button,
+  FormControl,
+} from 'react-bootstrap'
+
+import { addNewEquipPlan } from './utils'
 
 const { __ } = window.i18n['poi-plugin-item-improvement2']
 
