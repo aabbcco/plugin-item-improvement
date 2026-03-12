@@ -7,7 +7,7 @@ import { ListGroup, ListGroupItem, Collapse } from 'react-bootstrap'
 import { MaterialIcon, SlotitemIcon } from 'views/components/etc/icon'
 import { UseitemIcon } from '../useitem-icon'
 import { ItemInfoRow } from '../item-info-row'
-import { starCraftPlanSelector, improvementDataSelector, equipLevelStatSelector, equipAvailableSelector } from '../selectors'
+import { starCraftPlanSelector, improvementDataSelector, equipLevelStatSelector, equipAvailableSelector, adjustedRemodelChainsSelector, shipUniqueMapSelector } from '../selectors'
 import { constSelector } from 'views/utils/selectors'
 import { buildEquipImprovementCostIndex } from './improvement-cost'
 import { computePlanTotalsForEquip, addTotals, emptyTotals } from './plan-cost'
@@ -307,6 +307,41 @@ TotalsView.propTypes = {
   resources: PropTypes.array.isRequired,
 }
 
+const getTodayShips = (item, chains, uniqMap, $ships) => {
+  const improvement = _.get(item, 'improvement', [])
+  if (!improvement || improvement.length === 0) {
+    return []
+  }
+
+  const today = new Date().getDay()
+  const dayIndex = today === 0 ? 6 : today - 1
+
+  const allShips = new Set()
+
+  improvement.forEach(imp => {
+    const req = _.get(imp, 'req', [])
+    req.forEach(([days, ships]) => {
+      if (!ships || !Array.isArray(ships)) return
+      if (days[dayIndex]) {
+        ships.forEach(shipId => {
+          const uniqueId = uniqMap[shipId]
+          if (uniqueId) {
+            const chain = chains[uniqueId] || []
+            chain.forEach(id => allShips.add(id))
+          } else {
+            allShips.add(shipId)
+          }
+        })
+      }
+    })
+  })
+
+  return Array.from(allShips).map(id => ({
+    id,
+    name: _.get($ships, [id, 'api_name'], `Ship ${id}`),
+  })).sort((a, b) => a.name.localeCompare(b.name, 'ja'))
+}
+
 class PlanCostWrapper extends Component {
   static propTypes = {
     mstId: PropTypes.number.isRequired,
@@ -318,6 +353,9 @@ class PlanCostWrapper extends Component {
     $useitems: PropTypes.object.isRequired,
     availableEquips: PropTypes.object.isRequired,
     resources: PropTypes.array.isRequired,
+    $ships: PropTypes.object.isRequired,
+    chains: PropTypes.object.isRequired,
+    uniqMap: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -331,8 +369,11 @@ class PlanCostWrapper extends Component {
   }
 
   render() {
-    const { mstId, item, planByStar, levels, costEntry, $equips, $useitems, availableEquips, resources } = this.props
+    const { mstId, item, planByStar, levels, costEntry, $equips, $useitems, availableEquips, resources, $ships, chains, uniqMap } = this.props
     const owned = Array.isArray(levels) ? levels.length : 0
+
+    const todayShips = getTodayShips(item, chains, uniqMap, $ships)
+    const todayShipsText = todayShips.map(ship => window.i18n.resources.__(ship.name)).join('/')
 
     const planArr = Object.keys(planByStar)
       .map(k => {
@@ -371,7 +412,7 @@ class PlanCostWrapper extends Component {
             id={mstId}
             icon={_.get(item, 'api_type[3]', 0)}
             name={_.get(item, 'api_name', '')}
-            assistants={''}
+            assistants={todayShipsText}
             currentPlan={currentPlan}
           />
         </ListGroupItem>
@@ -430,14 +471,19 @@ const CostArea = connect(state => {
   const $const = constSelector(state) || {}
   const availableEquips = equipAvailableSelector(state)
   const resources = _.get(state, 'info.resources', [])
+  const chains = adjustedRemodelChainsSelector(state)
+  const uniqMap = shipUniqueMapSelector(state)
   return {
     plans,
     data,
     levelsById,
     $equips: $const.$equips || {},
     $useitems: $const.$useitems || {},
+    $ships: $const.$ships || {},
     availableEquips,
     resources,
+    chains,
+    uniqMap,
   }
 })(class CostArea extends Component {
   static propTypes = {
@@ -446,12 +492,15 @@ const CostArea = connect(state => {
     levelsById: PropTypes.object.isRequired,
     $equips: PropTypes.object.isRequired,
     $useitems: PropTypes.object.isRequired,
+    $ships: PropTypes.object.isRequired,
     availableEquips: PropTypes.object.isRequired,
     resources: PropTypes.array.isRequired,
+    chains: PropTypes.object.isRequired,
+    uniqMap: PropTypes.object.isRequired,
   }
 
   render() {
-    const { plans, data, levelsById, $equips, $useitems, availableEquips, resources } = this.props
+    const { plans, data, levelsById, $equips, $useitems, $ships, availableEquips, resources, chains, uniqMap } = this.props
     const costIndex = buildEquipImprovementCostIndex(data)
 
     const dataById = _(data)
@@ -517,6 +566,9 @@ const CostArea = connect(state => {
                       $useitems={$useitems}
                       availableEquips={availableEquips}
                       resources={resources}
+                      $ships={$ships}
+                      chains={chains}
+                      uniqMap={uniqMap}
                     />
                   </ListGroupItem>
                 )
